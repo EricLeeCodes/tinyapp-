@@ -61,7 +61,7 @@ function generateRandomString() {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   let randomString = "";
 
-  while (randomString.length <= 6) {
+  while (randomString.length < 6) {
     randomString += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
   }
 
