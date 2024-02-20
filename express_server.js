@@ -46,8 +46,8 @@ app.get("/u/:id", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  const longURL = req.longURL;
-  const id = req.id;
+  const longURL = req.body.longURL;
+  const id = generateRandomString();
   urlDatabase[id] = longURL;
   res.redirect(`/urls/${id}`); // Respond with 'Ok' (we will replace this)
 });
@@ -67,6 +67,4 @@ function generateRandomString() {
 
   return randomString;
 }
-
-console.log(generateRandomString());
 
