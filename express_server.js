@@ -46,17 +46,27 @@ app.get("/u/:id", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  const longURL = req.body;
-  const id = req.body;
+  const longURL = req.longURL;
+  const id = req.id;
   urlDatabase[id] = longURL;
-  res.send("/urls/:id"); // Respond with 'Ok' (we will replace this)
+  res.redirect(`/urls/${id}`); // Respond with 'Ok' (we will replace this)
 });
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
 
+//https://attacomsian.com/blog/javascript-generate-random-string used for inspiration
 function generateRandomString() {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  let randomString = "";
 
+  while (randomString.length <= 6) {
+    randomString += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+  }
+
+  return randomString;
 }
+
+console.log(generateRandomString());
 
