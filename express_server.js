@@ -49,7 +49,12 @@ app.post("/urls", (req, res) => {
   const longURL = req.body.longURL;
   const id = generateRandomString();
   urlDatabase[id] = longURL;
-  res.redirect(`/urls/${id}`); // Respond with 'Ok' (we will replace this)
+  res.redirect(`/urls/${id}`);
+});
+
+app.post("/urls/:id/delete", (req, res) => {
+  delete urlDatabase[req.params.id];
+  res.redirect(`/urls`);
 });
 
 app.listen(PORT, () => {
