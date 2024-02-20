@@ -55,7 +55,7 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${id}`);
 });
 
-app.post("/urls/:id/edit", (req, res) => {
+app.post("/urls/:id", (req, res) => {
   let editedLongURL = req.body.editedLongURL;
   urlDatabase[req.params.id] = editedLongURL;
   res.redirect(`/urls`);
