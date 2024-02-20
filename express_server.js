@@ -36,6 +36,9 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+
+
+
 app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
@@ -50,6 +53,12 @@ app.post("/urls", (req, res) => {
   const id = generateRandomString();
   urlDatabase[id] = longURL;
   res.redirect(`/urls/${id}`);
+});
+
+app.post("/urls/:id/edit", (req, res) => {
+  let editedLongURL = req.body.editedLongURL;
+  urlDatabase[req.params.id] = editedLongURL;
+  res.redirect(`/urls`);
 });
 
 app.post("/urls/:id/delete", (req, res) => {
