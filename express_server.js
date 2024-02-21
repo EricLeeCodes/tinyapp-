@@ -37,23 +37,23 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
+  const user = users[req.cookies["user_id"]];
   const templateVars = {
-    user: req.cookies["user_id"],
+    user,
     urls: urlDatabase
   };
   res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-  const templateVars = {
-    user: req.cookies["user_id"]
-  };
+  const user = users[req.cookies["user_id"]];
+  const templateVars = { user };
   res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
-  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id], user: req.cookies["user_id"] };
-
+  const user = users[req.cookies["user_id"]];
+  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id], user };
   res.render("urls_show", templateVars);
 });
 
@@ -71,8 +71,7 @@ app.post("/register", (req, res) => {
   users[candidateID].id = candidateID;
   users[candidateID].email = candidateEmail;
   users[candidateID].password = candidatePassword;
-  console.log(users);
-  res.cookie('user_id', req.body.email);
+  res.cookie('user_id', candidateID);
   res.redirect("/urls");
 });
 
@@ -104,12 +103,12 @@ app.post("/urls/:id/delete", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  res.cookie('user', req.body.username);
+  res.cookie('user_id', req.body.email);
   res.redirect(`/urls`);
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie('user');
+  res.clearCookie('user_id');
   res.redirect(`/urls`);
 });
 
