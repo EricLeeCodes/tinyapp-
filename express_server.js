@@ -67,7 +67,7 @@ app.post("/urls/:id/delete", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  res.cookie(req.body.username);
+  res.cookie('username', req.body.username);
   res.redirect(`/urls`);
 });
 
