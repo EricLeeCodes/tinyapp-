@@ -1,7 +1,9 @@
 const express = require("express");
+const cookieParser = require('cookie-parser');
 const app = express();
 const PORT = 8080;
 
+app.use(cookieParser());
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 
@@ -40,8 +42,6 @@ app.get("/urls/:id", (req, res) => {
 
   res.render("urls_show", templateVars);
 });
-
-
 
 
 app.get("/hello", (req, res) => {
