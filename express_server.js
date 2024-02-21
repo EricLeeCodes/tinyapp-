@@ -43,6 +43,9 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+app.get("/register", (req, res) => {
+  res.render("register");
+});
 
 app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
@@ -81,9 +84,7 @@ app.post("/logout", (req, res) => {
   res.redirect(`/urls`);
 });
 
-app.get("/register", (req, res) => {
-  res.render("/register");
-});
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
