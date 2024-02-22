@@ -66,6 +66,35 @@ app.get("/login", (req, res) => {
   res.render("login");
 });
 
+
+
+app.get("/hello", (req, res) => {
+  res.send("<html><body>Hello <b>World</b></body></html>\n");
+});
+
+app.get("/u/:id", (req, res) => {
+  const longURL = urlDatabase[req.params.id];
+  res.redirect(longURL);
+});
+
+app.post("/urls", (req, res) => {
+  const longURL = req.body.longURL;
+  const id = generateRandomString();
+  urlDatabase[id] = longURL;
+  res.redirect(`/urls/${id}`);
+});
+
+app.post("/urls/:id", (req, res) => {
+  let editedLongURL = req.body.editedLongURL;
+  urlDatabase[req.params.id] = editedLongURL;
+  res.redirect(`/urls`);
+});
+
+app.post("/urls/:id/delete", (req, res) => {
+  delete urlDatabase[req.params.id];
+  res.redirect(`/urls`);
+});
+
 app.post("/register", (req, res) => {
   const randomUserID = generateRandomUserID();
   const candidateID = randomUserID;
@@ -100,41 +129,26 @@ app.post("/register", (req, res) => {
   res.redirect("/urls");
 });
 
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
-
-app.get("/u/:id", (req, res) => {
-  const longURL = urlDatabase[req.params.id];
-  res.redirect(longURL);
-});
-
-app.post("/urls", (req, res) => {
-  const longURL = req.body.longURL;
-  const id = generateRandomString();
-  urlDatabase[id] = longURL;
-  res.redirect(`/urls/${id}`);
-});
-
-app.post("/urls/:id", (req, res) => {
-  let editedLongURL = req.body.editedLongURL;
-  urlDatabase[req.params.id] = editedLongURL;
-  res.redirect(`/urls`);
-});
-
-app.post("/urls/:id/delete", (req, res) => {
-  delete urlDatabase[req.params.id];
-  res.redirect(`/urls`);
-});
-
 app.post("/login", (req, res) => {
-  res.cookie('user_id', req.body.email);
+  const candidateEmail = req.body.email;
+  const candidatePassword = req.body.password;
+  const user = userLookUp(candidateEmail);
+
+  if (!user) {
+    return res.status(403).send("Email not found!");
+  }
+
+  if (user.password !== candidatePassword || user.email !== candidateEmail) {
+    return res.status(403).send("Email and password does not match.");
+  }
+
+  res.cookie('user_id', user.id);
   res.redirect(`/urls`);
 });
 
 app.post("/logout", (req, res) => {
   res.clearCookie('user_id');
-  res.redirect(`/urls`);
+  res.redirect(`/login`);
 });
 
 
