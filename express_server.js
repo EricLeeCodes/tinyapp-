@@ -62,6 +62,10 @@ app.get("/register", (req, res) => {
   res.render("register");
 });
 
+app.get("/login", (req, res) => {
+  res.render("login");
+});
+
 app.post("/register", (req, res) => {
   const randomUserID = generateRandomUserID();
   const candidateID = randomUserID;
@@ -70,7 +74,7 @@ app.post("/register", (req, res) => {
 
   //Checking if email or password is empty
   if (candidateEmail.length <= 0 || candidatePassword <= 0) {
-    res.status(400).send("Error 400!");
+    return res.status(400).send("Error 400!");
   }
   //Checking if email is there
 
@@ -81,8 +85,8 @@ app.post("/register", (req, res) => {
   //   }
   // }
 
-  if (userLookUp(candidateEmail)) {
-    res.status(400).send("Error 404");
+  if (userLookUp(candidateEmail) !== null) {
+    return res.status(400).send("Error 404");
   }
 
   //Adding new users by registration
@@ -167,7 +171,7 @@ function generateRandomUserID() {
 function userLookUp(email) {
   for (const userID in users) {
     if (email === users[userID].email) {
-      return userID;
+      return users[userID];
     }
   }
 
