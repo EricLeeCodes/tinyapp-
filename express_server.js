@@ -27,7 +27,6 @@ const urlDatabase = {
 };
 
 app.get("/", (req, res) => {
-  console.log("users stored", users);
   res.send("Hello!");
 });
 
@@ -37,6 +36,8 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
+  console.log("users stored", users);
+
   const user = users[req.cookies["user_id"]];
   const templateVars = {
     user,
@@ -66,11 +67,27 @@ app.post("/register", (req, res) => {
   const candidateID = randomUserID;
   const candidateEmail = req.body.email;
   const candidatePassword = req.body.password;
+
+  //Checking if email or password is empty
+  if (candidateEmail.length <= 0 || candidatePassword <= 0) {
+    res.status(400).send("Error 400!");
+  }
+  //Checking if email is there
+
+  console.log(candidateEmail);
+  for (const userID in users) {
+    if (candidateEmail === users[userID].email) {
+      res.status(400).send("Error 400!");
+    }
+  }
+
   //Adding new users by registration
   users[candidateID] = {};
   users[candidateID].id = candidateID;
   users[candidateID].email = candidateEmail;
   users[candidateID].password = candidatePassword;
+
+
   res.cookie('user_id', candidateID);
   res.redirect("/urls");
 });
@@ -140,4 +157,15 @@ function generateRandomUserID() {
   }
 
   return randomUserID;
+}
+
+//Checking if email is already registered
+function userLookUp(email) {
+  for (const userID in users) {
+    if (email === users[userID].email) {
+      return userID;
+    }
+  }
+
+  return null;
 }
