@@ -17,26 +17,21 @@
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
-      <% if (typeof user === "undefined"){ %>
-      <div class="form-inline">
-        <form action="/login" method="POST">
-          <input
-            class="form-control"
-            type="text"
-            name="email"
-            placeholder="Email"
-            style="width: 300px; margin: 1em"
-          />
-          <button type="submit" class="btn btn-outline-secondary">Login</button>
+
+      <% if (typeof user === "undefined"){ %> 
+        <form action="/login">
+          <button type="submit" class="btn btn-default">Login</button>
+        </form>
+        <form action="/register">
+          <button type="submit" class="btn btn-success">Register</button>
         </form>
         <% } else {%>
-        <div><span>User: </span><%= user.email %></div>
-        <div class="form-inline">
+      <div><span>User: </span><%= user.email %></div>
+      <div class="form-inline">
         <form action="/logout" method="POST">
           <button type="submit" class="btn btn-danger">Logout</button>
         </form>
         <% } %>
       </div>
-    </div>
   </nav>
 </header>
