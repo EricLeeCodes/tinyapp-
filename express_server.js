@@ -81,7 +81,11 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/u/:id", (req, res) => {
-  const longURL = urlDatabase[req.params.id];
+  const shortLinkID = req.params.id;
+  if (shortLinkID === "undefined") {
+    return res.send(`Sorry! The short link you're accessing does not exist!`);
+  }
+  const longURL = urlDatabase[shortLinkID];
   res.redirect(longURL);
 });
 
