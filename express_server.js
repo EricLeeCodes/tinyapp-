@@ -45,9 +45,13 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  const user = users[req.cookies["user_id"]];
-  const templateVars = { user };
-  res.render("urls_new", templateVars);
+  if (typeof req.cookies["user_id"] === 'undefined') {
+    res.redirect("/login");
+  } else {
+    const user = users[req.cookies["user_id"]];
+    const templateVars = { user };
+    res.render("urls_new", templateVars);
+  }
 });
 
 app.get("/urls/:id", (req, res) => {
@@ -72,8 +76,6 @@ app.get("/login", (req, res) => {
   }
 });
 
-
-
 app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
@@ -84,13 +86,19 @@ app.get("/u/:id", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  const longURL = req.body.longURL;
-  const id = generateRandomString();
-  urlDatabase[id] = longURL;
-  res.redirect(`/urls/${id}`);
+  if (typeof req.cookies["user_id"] === 'undefined') {
+    return res.send("Sorry. You cannot shorten URLs because you are not logged in.");
+  } else {
+    const longURL = req.body.longURL;
+    const id = generateRandomString();
+    urlDatabase[id] = longURL;
+    res.redirect(`/urls/${id}`);
+  }
+
 });
 
 app.post("/urls/:id", (req, res) => {
+
   let editedLongURL = req.body.editedLongURL;
   urlDatabase[req.params.id] = editedLongURL;
   res.redirect(`/urls`);
