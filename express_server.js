@@ -36,8 +36,6 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  console.log("users stored", users);
-
   const user = users[req.cookies["user_id"]];
   const templateVars = {
     user,
@@ -59,11 +57,19 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  res.render("register");
+  if (typeof req.cookies["user_id"] !== 'undefined') {
+    res.redirect("/urls");
+  } else {
+    res.render("register");
+  }
 });
 
 app.get("/login", (req, res) => {
-  res.render("login");
+  if (typeof req.cookies["user_id"] !== 'undefined') {
+    res.redirect("/urls");
+  } else {
+    res.render("login");
+  }
 });
 
 
@@ -191,3 +197,4 @@ function userLookUp(email) {
 
   return null;
 }
+
