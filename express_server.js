@@ -201,15 +201,21 @@ app.post("/login", (req, res) => {
   const candidateEmail = req.body.email;
   const user = userLookUp(candidateEmail);
   //Comparing inputted password with stored password.
-  bcrypt.compareSync(req.body.password, user.password);
 
+  //Checking if user exists
   if (!user) {
     return res.status(403).send("Email not found!");
   }
-
-  if (!bcrypt.compareSync(req.body.password, user.password) || user.email !== candidateEmail) {
+  //Checking if emails and password matches
+  if (!bcrypt.compareSync(req.body.password, user.password) || user.email !== req.body.email) {
     return res.status(403).send("Email and password does not match.");
   }
+  //Checking if email or password is empty
+  if (req.body.email <= 0 || req.body.password <= 0) {
+    return res.status(400).send("Email or password field is empty!");
+  }
+
+  bcrypt.compareSync(req.body.password, user.password);
 
   res.cookie('user_id', user.id);
   res.redirect(`/urls`);
