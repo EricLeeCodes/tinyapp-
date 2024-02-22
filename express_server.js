@@ -80,13 +80,14 @@ app.get("/urls/new", (req, res) => {
 //Help from Larry AI
 app.get("/urls/:id", (req, res) => {
   const user = users[req.cookies["user_id"]];
+  const userID = req.cookies["user_id"];
   const urlEntry = urlDatabase[req.params.id];
 
   if (!urlEntry) {
     return res.status(404).send("URL not found.");
   }
-  if (!user) {
-    return res.status(404).send("Please log in to access this.");
+  if (userID !== urlEntry.userID) {
+    return res.status(404).send("Please log in to access this!");
   }
 
   const templateVars = {
@@ -123,7 +124,9 @@ app.get("/u/:id", (req, res) => {
     return res.send(`Sorry! The short link you're accessing does not exist!`);
   }
   const longURL = urlDatabase[shortLinkID];
-  res.redirect(longURL);
+  if (longURL) {
+    res.redirect(longURL);
+  }
 });
 
 app.post("/urls", (req, res) => {
@@ -142,6 +145,11 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/urls/:id", (req, res) => {
+  const user = req.cookies["user_id"];
+  const urlEntry = urlDatabase[req.params.id];
+  if (user !== urlEntry.userID) {
+    return res.send("Please log in to access your files!");
+  }
   let editedLongURL = req.body.editedLongURL;
   if (editedLongURL.length < 3) {
     res.send("Please put in a valid website");
@@ -257,12 +265,4 @@ function userLookUp(email) {
   }
 
   return null;
-}
-
-function checkUserID(userID) {
-  for (const key in urlDatabase) {
-    if (userID === urlDatabase[key].userID) {
-
-    }
-  }
 }
