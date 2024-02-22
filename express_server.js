@@ -22,12 +22,20 @@ const users = {
 };
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  b6UTxQ: {
+    longURL: "https://www.lighthouse.ca",
+    userID: "aJ48lW"
+  },
+  i3BoGr: {
+    longURL: "https://www.google.ca",
+    userID: "aJ48lW"
+  },
 };
 
 app.get("/", (req, res) => {
+  res.clearCookie('user_id');
   res.send("Hello!");
+
 });
 
 
@@ -35,12 +43,27 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
+//Help from Larry AI
 app.get("/urls", (req, res) => {
-  const user = users[req.cookies["user_id"]];
+  const userID = req.cookies["user_id"];
+  if (!userID) {
+    return res.send('<h1>Please log in <a href="/login">here</a>!!!</h1>');
+  }
+
+  const user = users[userID];
+
+  const userURLs = {};
+  for (const key in urlDatabase) {
+    if (urlDatabase[key].userID === userID) {
+      userURLs[key] = urlDatabase[key];
+    }
+  }
+
   const templateVars = {
     user,
-    urls: urlDatabase
+    urls: userURLs
   };
+
   res.render("urls_index", templateVars);
 });
 
@@ -54,9 +77,23 @@ app.get("/urls/new", (req, res) => {
   }
 });
 
+//Help from Larry AI
 app.get("/urls/:id", (req, res) => {
   const user = users[req.cookies["user_id"]];
-  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id], user };
+  const urlEntry = urlDatabase[req.params.id];
+
+  if (!urlEntry) {
+    return res.status(404).send("URL not found.");
+  }
+  if (!user) {
+    return res.status(404).send("Please log in to access this.");
+  }
+
+  const templateVars = {
+    id: req.params.id,
+    longURL: urlDatabase[req.params.id].longURL,
+    user
+  };
   res.render("urls_show", templateVars);
 });
 
@@ -90,25 +127,37 @@ app.get("/u/:id", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  if (typeof req.cookies["user_id"] === 'undefined') {
+  const user = req.cookies["user_id"];
+  if (typeof user === 'undefined') {
     return res.send("Sorry. You cannot shorten URLs because you are not logged in.");
   } else {
-    const longURL = req.body.longURL;
-    const id = generateRandomString();
-    urlDatabase[id] = longURL;
-    res.redirect(`/urls/${id}`);
+    const longURLInput = req.body.longURL;
+    const key = generateRandomString();
+    urlDatabase[key] = {};
+    urlDatabase[key].longURL = longURLInput;
+    urlDatabase[key].userID = user;
+    res.redirect(`/urls/${key}`);
   }
 
 });
 
 app.post("/urls/:id", (req, res) => {
-
   let editedLongURL = req.body.editedLongURL;
-  urlDatabase[req.params.id] = editedLongURL;
+  if (editedLongURL.length < 3) {
+    res.send("Please put in a valid website");
+  }
+  urlDatabase[req.params.id].longURL = editedLongURL;
   res.redirect(`/urls`);
 });
 
 app.post("/urls/:id/delete", (req, res) => {
+  const userID = req.cookies["user_id"];
+  if (!urlDatabase[req.params.id]) {
+    return res.send("Short link does not exist.");
+  }
+  if (!userID) {
+    return res.send("Please log in to access your files!");
+  }
   delete urlDatabase[req.params.id];
   res.redirect(`/urls`);
 });
@@ -210,3 +259,10 @@ function userLookUp(email) {
   return null;
 }
 
+function checkUserID(userID) {
+  for (const key in urlDatabase) {
+    if (userID === urlDatabase[key].userID) {
+
+    }
+  }
+}
