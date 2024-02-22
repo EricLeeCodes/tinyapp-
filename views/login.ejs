@@ -9,11 +9,20 @@
     <div class="form-inline">
       <h1>Log In</h1>
       <form action="/login" method="POST">
+        <label for="email">Email: </label>
         <input
           class="form-control"
           type="text"
           name="email"
           placeholder="Email"
+          style="width: 300px; margin: 1em"
+        />
+        <label for="password">Password: </label>
+        <input
+          class="form-control"
+          type="text"
+          name="password"
+          placeholder="Password"
           style="width: 300px; margin: 1em"
         />
         <button type="submit" class="btn btn-outline-secondary">Login</button>
