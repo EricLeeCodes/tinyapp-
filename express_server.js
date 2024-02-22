@@ -74,11 +74,15 @@ app.post("/register", (req, res) => {
   }
   //Checking if email is there
 
-  console.log(candidateEmail);
-  for (const userID in users) {
-    if (candidateEmail === users[userID].email) {
-      res.status(400).send("Error 400!");
-    }
+  // console.log(candidateEmail);
+  // for (const userID in users) {
+  //   if (candidateEmail === users[userID].email) {
+  //     res.status(400).send("Error 400!");
+  //   }
+  // }
+
+  if (userLookUp(candidateEmail)) {
+    res.status(400).send("Error 404");
   }
 
   //Adding new users by registration
