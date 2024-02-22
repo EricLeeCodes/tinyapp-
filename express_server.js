@@ -109,7 +109,7 @@ app.post("/register", (req, res) => {
 
   //Checking if email or password is empty
   if (candidateEmail.length <= 0 || candidatePassword <= 0) {
-    return res.status(400).send("Error 400!");
+    return res.status(400).send("Email or password field is empty!");
   }
   //Checking if email is there
 
@@ -121,7 +121,7 @@ app.post("/register", (req, res) => {
   // }
 
   if (userLookUp(candidateEmail) !== null) {
-    return res.status(400).send("Error 404");
+    return res.status(400).send("Email already exists!");
   }
 
   //Adding new users by registration
