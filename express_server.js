@@ -2,7 +2,7 @@ const express = require("express");
 const cookieParser = require('cookie-parser');
 const app = express();
 const PORT = 8080;
-
+const bcrypt = require("bcryptjs");
 
 app.use(cookieParser());
 app.set("view engine", "ejs");
@@ -174,20 +174,13 @@ app.post("/register", (req, res) => {
   const randomUserID = generateRandomUserID();
   const candidateID = randomUserID;
   const candidateEmail = req.body.email;
-  const candidatePassword = req.body.password;
+  const hashedPassword = bcrypt.hashSync(req.body.password, 10);
 
   //Checking if email or password is empty
-  if (candidateEmail.length <= 0 || candidatePassword <= 0) {
+  if (req.body.email <= 0 || req.body.password <= 0) {
     return res.status(400).send("Email or password field is empty!");
   }
   //Checking if email is there
-
-  // console.log(candidateEmail);
-  // for (const userID in users) {
-  //   if (candidateEmail === users[userID].email) {
-  //     res.status(400).send("Error 400!");
-  //   }
-  // }
 
   if (userLookUp(candidateEmail) !== null) {
     return res.status(400).send("Email already exists!");
@@ -197,7 +190,7 @@ app.post("/register", (req, res) => {
   users[candidateID] = {};
   users[candidateID].id = candidateID;
   users[candidateID].email = candidateEmail;
-  users[candidateID].password = candidatePassword;
+  users[candidateID].password = hashedPassword;
 
 
   res.cookie('user_id', candidateID);
@@ -206,14 +199,15 @@ app.post("/register", (req, res) => {
 
 app.post("/login", (req, res) => {
   const candidateEmail = req.body.email;
-  const candidatePassword = req.body.password;
   const user = userLookUp(candidateEmail);
+  //Comparing inputted password with stored password.
+  bcrypt.compareSync(req.body.password, user.password);
 
   if (!user) {
     return res.status(403).send("Email not found!");
   }
 
-  if (user.password !== candidatePassword || user.email !== candidateEmail) {
+  if (!bcrypt.compareSync(req.body.password, user.password) || user.email !== candidateEmail) {
     return res.status(403).send("Email and password does not match.");
   }
 
@@ -243,7 +237,6 @@ function generateRandomString() {
 
   return randomString;
 }
-
 
 function generateRandomUserID() {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
