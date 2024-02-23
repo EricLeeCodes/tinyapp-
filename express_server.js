@@ -10,7 +10,6 @@ app.use(cookieSession({
   // Cookie Options
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }));
-app.use(cookieParser());
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 
@@ -115,7 +114,6 @@ app.get("/register", (req, res) => {
 
 app.get("/login", (req, res) => {
   const userID = req.session.user_id;
-  console.log("##1 userID ==>", userID);
   if (!userID) {
     res.render("login");
   } else {
@@ -182,14 +180,13 @@ app.post("/urls/:id/delete", (req, res) => {
 app.post("/register", (req, res) => {
   const candidateEmail = req.body.email;
   const candidatePassword = req.body.password;
-
+  const user = getUserByEmail(candidateEmail, users);
   //Checking if email or password is empty
   if (!candidateEmail || !candidatePassword) {
     return res.status(400).send("Email or password field is empty!");
   }
-
-  //Checking if email is there
-  if (userLookUp(candidateEmail)) {
+  //Checking if user is already there
+  if (user !== null) {
     return res.status(400).send("Email already exists!");
   }
 
@@ -209,9 +206,7 @@ app.post("/register", (req, res) => {
 
 app.post("/login", (req, res) => {
   const candidateEmail = req.body.email;
-  const user = userLookUp(candidateEmail);
-  //Comparing inputted password with stored password.
-
+  const user = getUserByEmail(candidateEmail, users);
   //Checking if user exists
   if (!user) {
     return res.status(403).send("Email not found!");
@@ -266,10 +261,17 @@ function generateRandomUserID() {
 }
 
 //Checking if email is already registered
-function userLookUp(email) {
-  for (const userID in users) {
-    if (email === users[userID].email) {
-      return users[userID];
+function getUserByEmail(email, database) {
+  // for (const userID in users) {
+  //   if (email === users[userID].email) {
+  //     return users[userID];
+  //   }
+  // }
+  //return null;
+  const userObj = {};
+  for (const user in database) {
+    if (database[user].email === email) {
+      return database[user];
     }
   }
 
