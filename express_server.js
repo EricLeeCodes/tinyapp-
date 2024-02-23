@@ -3,6 +3,7 @@ var cookieSession = require('cookie-session');
 const app = express();
 const PORT = 8080;
 const bcrypt = require("bcryptjs");
+const { getUserByEmail } = require("./helpers");
 
 app.use(cookieSession({
   name: 'session',
@@ -260,20 +261,3 @@ function generateRandomUserID() {
   return randomUserID;
 }
 
-//Checking if email is already registered
-function getUserByEmail(email, database) {
-  // for (const userID in users) {
-  //   if (email === users[userID].email) {
-  //     return users[userID];
-  //   }
-  // }
-  //return null;
-  const userObj = {};
-  for (const user in database) {
-    if (database[user].email === email) {
-      return database[user];
-    }
-  }
-
-  return null;
-}
