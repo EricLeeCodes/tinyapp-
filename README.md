@@ -4,9 +4,17 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 ## Final Product
 
-!["Screen shot of the URL page"](#)
-!["Accessing the short link"](#)
-!["Successful access using the short link"](#)
+We can add a variety of websites and TinyApp will create a random short link for us:
+
+!["Screen shot of the URL page"](docs/urls-page.PNG)
+
+We can use the shortlink by adding /u/ before. For example /u/MRaysf:
+
+!["Accessing the short link"](docs/accessing-redirect.png)
+
+After the URL has been submitted, we are redirected to the longURL that has been stored.
+
+!["Successful access using the short link"](docs/redirect-success.png)
 
 ## Dependencies
 
