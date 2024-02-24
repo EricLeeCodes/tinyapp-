@@ -186,8 +186,8 @@ app.post("/urls", (req, res) => {
     urlDatabase[key].longURL = longURLInput;
     //Added userID key with user as the value
     urlDatabase[key].userID = user;
-    //redirects to the urls/id page
-    res.redirect(`/urls/${key}`);
+    //redirects to the urls page
+    res.redirect(`/urls`);
   }
 
 });
